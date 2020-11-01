@@ -1,0 +1,107 @@
+﻿@model spice.Models.ModelView.SubCategoryCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container border category-area">
+    <div class="row category-area-upper">
+        <div class="col-12">
+            <h4>Sub Category</h4>
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+        </div>
+        <div class="col-9 border-right">
+
+            <hr />
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row">
+                    <label asp-for="SubCategory.Name" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <input asp-for="SubCategory.Name" type="text" class="form-control ">
+                    </div>
+                    <span asp-validation-for="SubCategory.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="SubCategory.CategoryId" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" class="form-control"
+                                asp-items="Model.CategoryLists">
+                            <option value="">Select Role</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="SubCategory.CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-6 offset-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <input type="submit" class="btn btn-primary form-control" value="Create" />
+                            </div>
+                            <div class="col-md-5">
+                                <a asp-action="Index" class="btn btn-info form-control">Back to Lists</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-3">
+            @if (Model.SubCategoryList.Count() > 0)
+            {
+                <p> Existing Subcategories: </p>
+
+                <div id="SubCategoryList">
+                    
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        
+        function updateSubCategoryList() {
+            var categorySelected = document.getElementById("ddlCategorylist").value;
+            $list = $('#SubCategoryList');
+
+            $.ajax({
+                url: '/Admin/SubCategories/GetSubCategory/' + categorySelected,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data) {
+                    results = JSON.parse(data);
+                    $list.html('');
+                    $list.append(' <ul class="list-group"> ');
+                    for (var i = 0; i < results.length; i++) {
+                        $list.append('<li class="list-group-item">' + results[i].text + '</li>');
+                    }                    
+                    $list.append('</ul>');
+                }
+            });
+        }
+
+        // first this method will be loaded when page load
+        $(document).ready(function () {
+            updateSubCategoryList();
+        });
+
+        // This Method will call, when sub category select..
+        $("#ddlCategorylist").on("change", function () {
+            updateSubCategoryList();
+        });
+    </script>
+
+
+}

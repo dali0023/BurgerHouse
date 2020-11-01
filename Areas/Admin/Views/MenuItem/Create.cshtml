@@ -1,0 +1,148 @@
+﻿@model spice.Models.ViewModel.MenuItemCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container border category-area">
+    <div class="row category-area-upper">
+
+        <div class="col-12">
+            <h4>Sub Category</h4>
+            <hr />
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.Name" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <input asp-for="MenuItem.Name" type="text" class="form-control ">
+                    </div>
+                    <span asp-validation-for="MenuItem.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.Description" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <textarea asp-for="MenuItem.Description" class="form-control ">
+
+                        </textarea>
+                    </div>
+                    <span asp-validation-for="MenuItem.Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.Spicyness" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <select asp-for="MenuItem.Spicyness" asp-items="Html.GetEnumSelectList<MenuItem.ESpicy>()" class="form-control">
+                        </select>
+                    </div>
+                    <span asp-validation-for="MenuItem.Spicyness" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.Image" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <input type="file" name="files" multiple asp-for="MenuItem.Image" class="form-control" />
+
+                    </div>
+                    <span asp-validation-for="MenuItem.Image" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.CategoryId" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <select asp-for="MenuItem.CategoryId" id="CategoryId"
+                                class="form-control" asp-items="@Model.CategoryLists">
+                        </select>
+                    </div>
+                    <span asp-validation-for="MenuItem.CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label asp-for="MenuItem.SubCategoryId" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <select asp-for="MenuItem.SubCategoryId" name="SubCategoryId" id="SubCategoryId"
+                                class="form-control" asp-items="@(new SelectList(string.Empty,"Id","Name"))">
+                        </select>
+                    </div>
+                    <span asp-validation-for="MenuItem.SubCategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <label asp-for="MenuItem.Price" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-6">
+                        <input asp-for="MenuItem.Price" class="form-control" />
+                    </div>
+                    <span asp-validation-for="MenuItem.Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-3 offset-2">
+                        <input type="submit" value="Create" class="btn btn-primary form-control" />
+                    </div>
+                    <div class="col-sm-3">
+                        <a asp-action="Index" class="btn btn-info form-control">Back to List</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        tinymce.init({
+            selector: "textarea",
+            plugins: [
+                "advlist lists"
+            ],
+            toolbar: "bullist numlist"
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getSubCategory();
+            $('#CategoryId').change(function () {
+                getSubCategory();
+            });
+        });
+
+
+        function getSubCategory() {
+
+           
+            var categorySelected = document.getElementById("CategoryId").value;
+            $list = $('#SubCategoryId');
+
+            $.ajax({
+                url: '@Url.Content("~/")' + "Admin/SubCategories/GetSubCategory/" + categorySelected,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data) {
+                    results = JSON.parse(data);
+                    $list.html('');
+                    for (var i = 0; i < results.length; i++) {
+                       $list.append("<option value='" + results[i].value + "'>" + results[i].text +  "</option>");
+                    }
+                }
+            });
+
+            // Same 
+            @*var url = '@Url.Content("~/")' + "Admin/SubCategories/GetSubCategory";
+            var ddlsoruce = '#CategoryId';
+            $.getJSON(url, { id: $(ddlsoruce).val() }, function (data) {
+                var items = '';
+                $('#SubCategoryId').empty();
+                $.each(data, function (i, subcategory) {
+                    items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                });
+                $('#SubCategoryId').html(items);
+            })*@
+        }
+    </script>
+
+
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
