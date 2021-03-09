@@ -2,25 +2,26 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-    <div class="container border category-area">
-        <div class="row category-area-upper">
-            <div class="col-md-6 text-left">
-                <strong>Category List</strong>
-            </div>
-            <div class="col-md-6 text-right">
-                <a asp-action="Create" class="btn btn-primary btn-sm">Create New</a>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-
-                @if (Model.Count() > 0)
-                {
-                    <table class="table">
+@section Styles {
+    <partial name="AdminLTE/DataTables/_DataTablesStyles" />
+}
+<div class="container border category-area">
+    <div class="row">
+       <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <strong>Menu Items</strong>
+                    </h3>
+                    <p class="text-right">
+                        <a asp-action="Create" class="btn btn-primary btn-sm">Create New Item</a>
+                    </p>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>
@@ -67,11 +68,18 @@
                             }
                         </tbody>
                     </table>
-                }
-                else
-                {
-                 <p class="border text-center text-danger" style="padding:10px; margin-top:25px"> No Records Exists </p>
-                }
+                </div>
+                <!-- /.card-body -->
             </div>
-            </div>
+            <!-- /.card -->
         </div>
+        <!-- /.col -->
+
+
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="AdminLTE/DataTables/_DataTablesScripts" />
+}

@@ -48,10 +48,10 @@ namespace spice.Data
             {
                 UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
-                Name = "Bhrugen Patel",
+                Name = "Nazmul Hasan",
                 EmailConfirmed = true,
-                PhoneNumber = "1112223333"
-            }, "Admin123*").GetAwaiter().GetResult();
+                PhoneNumber = "2368084685"
+            }, "Admin@123").GetAwaiter().GetResult();
 
             IdentityUser user = await _db.Users.FirstOrDefaultAsync(u => u.Email == "admin@gmail.com");
 

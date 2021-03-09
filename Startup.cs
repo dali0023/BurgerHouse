@@ -41,7 +41,7 @@ namespace spice
                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Seed data
-            //services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
             // For Payments
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
            
@@ -90,7 +90,7 @@ namespace spice
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -110,7 +110,7 @@ namespace spice
             //Add Strip for payment methods
             StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 
-            //dbInitializer.Initialize();
+            dbInitializer.Initialize();
             // Add Session
             app.UseSession();
             app.UseAuthentication();
